@@ -17,7 +17,7 @@ To build the program, either:
 
 ```sh
 # from the repo root
-make build-1-cobol
+make day1
 ```
 
 Or:
