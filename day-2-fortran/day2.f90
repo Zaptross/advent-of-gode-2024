@@ -1,20 +1,24 @@
 program day2
+  ! from the intrinsic library, import the end of file (EOF) status
   use, intrinsic :: iso_fortran_env, only : iostat_end
   implicit none
 
-  ! declare variables for later use 
-
+  ! declare variables for reading in the file line by line
   logical :: file_exists
   integer :: file_handle, error
-  integer :: i, j, k, safe, safe_count, diff, safe_problem_damped
   character(20) :: filepath
   character(24) :: raw_line
+
+  ! declare variables for parsing the lines into arrays of integers
+  integer :: i, j, k, parsed_num
   character(4) :: parse_char
-  integer, dimension(:), allocatable :: line
   integer, dimension(7) :: row
-  integer, dimension(7) :: line_after_split
-  integer :: line_length
-  integer :: parsed_num, p_err
+
+  ! declare variables for counting the results
+  integer :: safe, safe_count, safe_problem_damped
+
+  ! declare that we're using our functions below. the type must match the
+  ! function return type, and the name must match
   integer :: is_safe
   integer :: problem_dampener
 
@@ -54,66 +58,68 @@ program day2
       ! characters and building each number
       read(file_handle, '(A)', iostat = error) raw_line
 
+
+      ! when we read each line, we need to check if we've had an error or hit eof
+      if (error == iostat_end) then
+        ! if we hit end of file, exit the loop
+        exit
+      else if (error /= 0) then
+        ! if there was an error, log it and exit
+        print *, "error reading file", error
+        exit
+      end if
+
+      ! after checking for read errors or eof, process the line data
+
       ! trim any preceding or trailing whitespace, just in case
       raw_line = trim(raw_line)
 
-      ! when we read each line, we need to check if we've had an error or hit eof
-      select case(error)
+      ! for each character in the string, check if it is not a space and add it
+      ! to the parse_char string, to later parse into an int
+      do i = 1, len(raw_line), 1
 
-      ! if it was a successful line read
-      case(0)
+        ! if this character is a space we're between numbers, so we can
+        ! parse the char and add it to the row
+        if (raw_line(i:i) == ' ') then
+          ! if it's not an empty parse_char string
+          if (len(parse_char) > 0) then
 
-        ! for each character in the string, check if it is not a space and add it
-        ! to the parse_char string, to later parse into an int
-        do i = 1, len(raw_line), 1
+            ! treat the string as an "internal file" and read the value out as
+            ! an integer. this is the idiomatic way to parse integers
+            read(parse_char, '(i4)') parsed_num
 
-          ! if this character is a space we're between numbers, so we can
-          ! parse the char and add it to the row
-          if (raw_line(i:i) == ' ') then
-            ! if it's not an empty parse_char string
-            if (len(parse_char) > 0) then
-
-              ! treat the string as an "internal file" and read the value out as
-              ! an integer. this is the idiomatic way to parse integers
-              read(parse_char, '(i4)') diff
-
-              ! if the parsed character succeeded, it should be > 0, and we can
-              ! add it to the row, then move our pointer to the next element
-              ! of the row ready to insert the next number
-              if (diff > 0) then
-                row(k:k) = diff
-                k = k + 1
-              end if
+            ! if the parsed character succeeded, it should be > 0, and we can
+            ! add it to the row, then move our pointer to the next element
+            ! of the row ready to insert the next number
+            if (parsed_num > 0) then
+              row(k:k) = parsed_num
+              k = k + 1
             end if
-
-            ! reset variables after parsing and adding the character
-            j = 1
-            parse_char = ''
-          else
-
-            ! if it's not a space it must be a digit, so add it to the parse_char
-            ! string, and move the pointer to the next element of the parse_char
-            parse_char(j:j) = raw_line(i:i)
-            j = j + 1
           end if
-        end do
 
-        ! after parsing a row check if it is safe for part 1
-        diff = is_safe(row, k - 1)
-        if (diff == 0) then
-          safe_count = safe_count + 1
-        end if
+          ! reset variables after parsing and adding the character
+          j = 1
+          parse_char = ''
+        else
 
-        ! then check if it is handled by the problem dampener for part 2
-        diff = problem_dampener(row, k - 1)
-        if (diff == 0) then
-          safe_problem_damped = safe_problem_damped + 1
+          ! if it's not a space it must be a digit, so add it to the parse_char
+          ! string, and move the pointer to the next element of the parse_char
+          parse_char(j:j) = raw_line(i:i)
+          j = j + 1
         end if
-      case(iostat_end)
-        exit
-      case default
-        print *, "error reading file", error
-      end select
+      end do
+
+      ! after parsing a row check if it is safe for part 1
+      safe = is_safe(row, k - 1)
+      if (safe == 0) then
+        safe_count = safe_count + 1
+      end if
+
+      ! then check if it is handled by the problem dampener for part 2
+      safe = problem_dampener(row, k - 1)
+      if (safe == 0) then
+        safe_problem_damped = safe_problem_damped + 1
+      end if
     end do
 
     close(file_handle)
@@ -125,26 +131,6 @@ program day2
   print *, "Part 2 - problem damping", safe_problem_damped
 
 end program day2
-
-function split_line(raw) result (out_row)
-
-  character(24), intent(in) :: raw
-  integer, dimension(7) :: out_row
-  integer :: i
-  integer :: num
-  integer :: err
-
-  out_row = [0,0,0,0,0,0,0]
-  i = 1
-  num = 0
-
-  do
-    read(raw, *, iostat=err) num
-    out_row(i) = num
-    i = i + 1
-  end do
-
-end function split_line
 
 integer function problem_dampener(row, count) result(safe)
   ! These are allocating the function args, and `intent(in)` denotes them as
