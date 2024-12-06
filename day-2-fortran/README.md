@@ -23,7 +23,7 @@ make day2
 Or:
 
 ```sh
-# in the day-1-cobol directory
+# in the day-2-fortran directory
 gfortran day2.f90 -o day2
 ```
 
