@@ -31,12 +31,13 @@ day-1-cobol/d1p2: day-1-cobol/day1.cbl
 	cobc -free -D PART_N=2 -x -o d1p2 day1.cbl && \
 	./d1p1
 
-day2: day-2-fortran/d2p1e
-.PHONY: day-2-fortran/d2p1e
+day2: day-2-fortran/day2
+.PHONY: day-2-fortran/day2
 cleand2:
-	rm day-2-fortran/d2p1e
+	rm day-2-fortran/day2
 
-day-2-fortran/d2p1e: day-2-fortran/day2.f90
+day-2-fortran/day2: day-2-fortran/day2.f90
 	cd day-2-fortran && \
-	gfortran day2.f90 -o d2p1e && \
-	./d2p1e
+	gfortran day2.f90 -o day2 && \
+	echo "example.txt" | ./day2 && \
+	echo "input.txt" | ./day2

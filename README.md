@@ -15,3 +15,4 @@ These will be broken into themed "weeks" of five languages:
 | day | language | part 1 | part 2 |
 | --- | -------- | ------ | ------ |
 | 1   | COBOl    | ⭐     | ⭐     |
+| 2   | FORTRAN  | ⭐     | ⭐     |

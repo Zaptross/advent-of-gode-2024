@@ -24,14 +24,14 @@ Or:
 
 ```sh
 # in the day-1-cobol directory
-gfortran day2.f90 -o d2p1
+gfortran day2.f90 -o day2
 ```
 
 To run the example, either run the binary and type the file name to use:
 Eg:
 
 ```sh
-./d2p1
+./day2
 # typed once the program starts:
 example.txt
 ```
@@ -39,7 +39,7 @@ example.txt
 Or pipe the filename to the binary:
 
 ```sh
-echo example.txt | d2p1
+echo example.txt | day2
 ```
 
 ## Docs
