@@ -46,4 +46,6 @@ echo example.txt | day3
 
 ## Docs
 
-- []()
+- [NASM Documentation](https://www.nasm.us/xdoc/2.13.03/html/nasmdoc0.html)
+- [x86 Wiki](https://en.wikibooks.org/wiki/X86_Assembly/Control_Flow#Comparison_Instructions)
+- [Nasm Book](https://www.usna.edu/Users/cs/norine/spring24/SI459/resources/X86NasmBook.pdf)
