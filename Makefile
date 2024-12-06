@@ -1,5 +1,5 @@
-all: day1
-clean: cleand1
+all: day1 day2
+clean: cleand1 cleand2
 
 # DAY 1 - COBOL
 day1: day-1-cobol/d1p1e day-1-cobol/d1p1 day-1-cobol/d1p2e day-1-cobol/d1p2
